@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('eveonline', '0016_character_names_are_not_unique'),
+        ('eveonline', '0015_factions'),
         ('esi', '0011_add_token_indices'),
         ('auth', '0012_alter_user_first_name_max_length'),
     ]

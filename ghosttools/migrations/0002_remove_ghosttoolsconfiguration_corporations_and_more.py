@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('eveonline', '0016_character_names_are_not_unique'),
+        ('eveonline', '0015_factions'),
         ('ghosttools', '0001_initial'),
     ]
 
