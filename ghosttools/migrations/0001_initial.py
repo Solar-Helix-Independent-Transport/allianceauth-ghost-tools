@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('eveonline', '0015_factions'),
-        ('esi', '0011_add_token_indices'),
+        ('esi', '0010_set_new_tokens_to_sso_v2'),
         ('auth', '0012_alter_user_first_name_max_length'),
     ]
 
