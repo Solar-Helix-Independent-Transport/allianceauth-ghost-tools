@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 api = NinjaAPI(title="Ghost Tools API", version="0.0.1",
                urls_namespace='ghosttools:api', auth=django_auth, csrf=True,)
-               #openapi_url=settings.DEBUG and "/openapi.json" or "")
+# openapi_url=settings.DEBUG and "/openapi.json" or "")
 
 
 @api.get(
@@ -27,15 +27,17 @@ api = NinjaAPI(title="Ghost Tools API", version="0.0.1",
 def get_ghost_list(request):
     if request.user.has_perm('ghosttools.access_ghost_tools'):
         # Get Corp ID
-        cid = models.GhostToolsConfiguration.objects.get(id=1).corporation.corporation_id
-        
+        cid = models.GhostToolsConfiguration.objects.get(
+            id=1).corporation.corporation_id
+
         # find a corp token
-        token = get_corp_token(cid, ['esi-corporations.track_members.v1'], ['Director'])
+        token = get_corp_token(
+            cid, ['esi-corporations.track_members.v1'], ['Director'])
 
         # grab member tracking list
         tracking = esi.client.Corporation.get_corporations_corporation_id_membertracking(
-                corporation_id=cid,
-                token=token.valid_access_token()).result()
+            corporation_id=cid,
+            token=token.valid_access_token()).result()
 
         # get all characters in auth
         location_ids = []
@@ -43,39 +45,66 @@ def get_ghost_list(request):
         char_id = {}
         for c in tracking:
             char_id[c['character_id']] = {
-                "char_name": "",
-                "main_name": "",
-                "location": "",
-                "ship": "",
-                "location_id": c.get("location_id", ""),
+                "char": {"id": 0, "name": ""},
+                "main": {"id": 0, "name": ""},
+                "location": {
+                    "id": c.get("location_id", 0),
+                    "name": "",
+                    "system": {"id": 0, "name": ""}
+                },
+                "ship": {
+                    "id": c.get("ship_type_id", ""),
+                    "name": ""
+                },
                 "last_clone_jump_date": "",
                 "last_station_change_date": "",
-                "death_clone": "",
+                "death_clone": {
+                    "id": 0,
+                    "name": ""
+                },
                 "logoff_date": c.get("logoff_date", ""),
-                "start_date":  c.get("start_date", ""),
-                "ship_type_id":  c.get("ship_type_id", ""),
+                "start_date": c.get("start_date", "")
             }
             location_ids.append(c.get("location_id", ""))
             type_ids.append(c.get("ship_type_id", ""))
-        
-        c_models = EveCharacter.objects.filter(character_id__in=list(char_id.keys()))
+
+        c_models = EveCharacter.objects.filter(
+            character_id__in=list(char_id.keys())
+        ).select_related(
+            "character_ownership",
+            "character_ownership__user",
+            "character_ownership__user__profile",
+            "character_ownership__user__profile__main_character",
+            "characteraudit",
+            "characteraudit__clone",
+            "characteraudit__clone__location_name",
+        )
         for c in c_models:
-            char_id[c.character_id]["char_name"]=c.character_name
+            char_id[c.character_id]["char"] = {
+                "id": c.character_id,
+                "name": c.character_name
+            }
             try:
-                char_id[c.character_id]["main_name"]=c.character_ownership.user.profile.main_character.character_name
+                char_id[c.character_id]["main"] = {
+                    "id": c.character_ownership.user.profile.main_character.character_id,
+                    "name": c.character_ownership.user.profile.main_character.character_name,
+                }
             except Exception as e:
                 print(e)
                 pass
             try:
-                char_id[c.character_id]["death_clone"]=c.characteraudit.clone.location_name.location_name
+                char_id[c.character_id]["death_clone"] = {
+                    "id": c.characteraudit.clone.location_name.location_id,
+                    "name": c.characteraudit.clone.location_name.location_name
+                }
             except Exception as e:
                 pass
             try:
-                char_id[c.character_id]["last_station_change_date"]=c.characteraudit.clone.last_station_change_date
+                char_id[c.character_id]["last_station_change_date"] = c.characteraudit.clone.last_station_change_date
             except Exception as e:
                 pass
             try:
-                char_id[c.character_id]["last_clone_jump_date"]=c.characteraudit.clone.last_clone_jump_date
+                char_id[c.character_id]["last_clone_jump_date"] = c.characteraudit.clone.last_clone_jump_date
             except Exception as e:
                 pass
         locations = EveLocation.objects.filter(location_id__in=location_ids)
@@ -89,9 +118,11 @@ def get_ghost_list(request):
             type_dict[t.type_id] = t.name
 
         for id, d in char_id.items():
-            d["location"] = loc_dict.get(d['location_id'], "")
-            d["ship"] = type_dict.get(d['ship_type_id'], "")
-        
+            d["location"]['name'] = loc_dict.get(
+                d['location']['id'], f"Unknown {d['location']['id']}")
+            d["ship"]['name'] = type_dict.get(
+                d['ship']['id'], f"Unknown {d['ship']['id']}")
+
         return list(char_id.values())
     else:
         return []
