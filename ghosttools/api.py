@@ -44,8 +44,15 @@ def get_ghost_list(request):
         char_id = {}
         for c in tracking:
             char_id[c['character_id']] = {
-                "char": {"id": 0, "name": ""},
-                "main": {"id": 0, "name": "", "corp": ""},
+                "char": {
+                    "id": c.get("character_id", 0),
+                    "name": ""},
+                "main": {
+                    "id": 0,
+                    "name": "",
+                    "corp": "",
+                    "alli": ""
+                },
                 "location": {
                     "id": c.get("location_id", 0),
                     "name": "",
@@ -88,6 +95,7 @@ def get_ghost_list(request):
                     "id": c.character_ownership.user.profile.main_character.character_id,
                     "name": c.character_ownership.user.profile.main_character.character_name,
                     "corp": c.character_ownership.user.profile.main_character.corporation_name,
+                    "alli": c.character_ownership.user.profile.main_character.alliance_name,
                 }
             except Exception as e:
                 print(e)

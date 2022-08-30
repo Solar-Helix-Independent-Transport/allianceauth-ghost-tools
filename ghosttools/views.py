@@ -36,6 +36,6 @@ def ghost_setkick_character(request, token):
         else:
             GhostKickToken.objects.create(user=request.user, token=token)
         messages.success(request,
-                         _("Linked Ghost Character: {}".format(token.character_name)))
+                         "Linked Ghost Character: {}".format(token.character_name))
 
     return redirect("ghosttools:view")

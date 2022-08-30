@@ -62,7 +62,31 @@
 {% endblock extra_javascript %}
 
 {% block content %}
-<h1 class="text-center">Ghost Tools</h1>
+<br/>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Ghost Tools</a>
+      </div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav"></ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'ghosttools:add' %}">Add Corporate Token</a></li>
+            {% if request.user.ghost_character.token %}
+                <li><a href="{% url 'ghosttools:set' %}">Linked: {{ request.user.ghost_character.token.character_name }}</a></li>
+            {% else %}
+                <li><a href="{% url 'ghosttools:set' %}">Set Linked Character</a></li>
+            {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
 
 <div id="root">
     <div id="app">

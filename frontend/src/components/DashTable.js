@@ -6,6 +6,7 @@ import { PanelLoader } from "./PanelLoader";
 import { BaseTable, textColumnFilter, SelectColumnFilter } from "./BaseTable";
 import Select from "react-select";
 import { ErrorLoader } from "./ErrorLoader";
+import ReactTimeAgo from "react-time-ago";
 
 export const Dashboard = () => {
   const { isLoading, error, data, isFetching } = useQuery(["dashboard"], () =>
@@ -35,6 +36,15 @@ export const Dashboard = () => {
       {
         Header: "Corp",
         accessor: "main.corp",
+        Filter: SelectColumnFilter,
+        filter: "text",
+        Cell: (props) => (
+          <div style={{ whiteSpace: "nowrap" }}>{props.value}</div>
+        ),
+      },
+      {
+        Header: "Alliance",
+        accessor: "main.alli",
         Filter: SelectColumnFilter,
         filter: "text",
         Cell: (props) => (
@@ -72,15 +82,26 @@ export const Dashboard = () => {
         Header: "Last Online",
         accessor: "logoff_date",
         Cell: (props) => (
-          <div style={{ whiteSpace: "nowrap" }}>{props.value}</div>
+          <div style={{ whiteSpace: "nowrap" }}>
+            {props.value ? (
+              <ReactTimeAgo date={Date.parse(props.value)} />
+            ) : (
+              <></>
+            )}
+          </div>
         ),
       },
-      ,
       {
         Header: "Join Date",
         accessor: "start_date",
         Cell: (props) => (
-          <div style={{ whiteSpace: "nowrap" }}>{props.value}</div>
+          <div style={{ whiteSpace: "nowrap" }}>
+            {props.value ? (
+              <ReactTimeAgo date={Date.parse(props.value)} />
+            ) : (
+              <></>
+            )}
+          </div>
         ),
       },
     ],
