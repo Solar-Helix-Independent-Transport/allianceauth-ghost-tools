@@ -1,9 +1,8 @@
+from allianceauth.eveonline.models import EveCorporationInfo
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.contrib.auth.models import User
 from esi.models import Token
-
-from allianceauth.eveonline.models import EveCorporationInfo
 
 
 class GhostToolsConfiguration(models.Model):

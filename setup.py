@@ -1,6 +1,9 @@
-from ghosttools import __version__
 import os
+
 from setuptools import find_packages, setup
+
+from ghosttools import __version__
+
 install_requires = [
     'allianceauth>=2.9.0',
 ]

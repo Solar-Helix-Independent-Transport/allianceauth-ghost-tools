@@ -1,7 +1,6 @@
 from django.urls import re_path
 
 from . import views
-
 from .api import api
 
 app_name = 'ghosttools'

@@ -1,16 +1,15 @@
+import logging
+
 from allianceauth.eveonline.models import EveCharacter
 from corptools.models import EveItemType, EveLocation
-from ninja import NinjaAPI
-from ninja.security import django_auth
-from ninja.responses import codes_4xx
-
 from corptools.providers import esi
 from corptools.task_helpers.corp_helpers import get_corp_token
 from django.conf import settings
+from ninja import NinjaAPI
+from ninja.responses import codes_4xx
+from ninja.security import django_auth
+
 from . import models
-
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +45,7 @@ def get_ghost_list(request):
         for c in tracking:
             char_id[c['character_id']] = {
                 "char": {"id": 0, "name": ""},
-                "main": {"id": 0, "name": ""},
+                "main": {"id": 0, "name": "", "corp": ""},
                 "location": {
                     "id": c.get("location_id", 0),
                     "name": "",
@@ -88,6 +87,7 @@ def get_ghost_list(request):
                 char_id[c.character_id]["main"] = {
                     "id": c.character_ownership.user.profile.main_character.character_id,
                     "name": c.character_ownership.user.profile.main_character.character_name,
+                    "corp": c.character_ownership.user.profile.main_character.corporation_name,
                 }
             except Exception as e:
                 print(e)
