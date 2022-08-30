@@ -46,12 +46,12 @@ def get_ghost_list(request):
             char_id[c['character_id']] = {
                 "char": {
                     "id": c.get("character_id", 0),
-                    "name": ""},
+                    "name": "**UNKNOWN**"},
                 "main": {
                     "id": 0,
-                    "name": "",
-                    "corp": "",
-                    "alli": ""
+                    "name": "**ORPHAN**",
+                    "corp": "**UNKNOWN**",
+                    "alli": "**UNKNOWN**"
                 },
                 "location": {
                     "id": c.get("location_id", 0),
@@ -134,3 +134,27 @@ def get_ghost_list(request):
         return list(char_id.values())
     else:
         return []
+
+
+@api.post(
+    "ghost/kick",
+    tags=["Ghosts"]
+)
+def get_ghost_list(request, character_id: int):
+    if not request.user.has_perm('ghosttools.access_ghost_tools'):
+        return 403, "Permission Denied"
+
+    try:
+        if id:
+            linked = request.user.ghost_character
+            if linked:
+                online = esi.client.Location.get_characters_character_id_online(
+                    character_id=linked.token.character_id, token=linked.token.valid_access_token()).result()
+                if online.get('online', False):
+                    esi.client.User_Interface.post_ui_openwindow_information(
+                        target_id=character_id, token=linked.token.valid_access_token()).result()
+
+        return 200, "Sent Open Request"
+    except Exception as e:
+        print(e)
+        return 200, "Failed to Send Open Request"

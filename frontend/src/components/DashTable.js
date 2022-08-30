@@ -1,7 +1,7 @@
 import React from "react";
-import { Panel, Label } from "react-bootstrap";
+import { Panel, Label, Button, ButtonGroup } from "react-bootstrap";
 import { useQuery } from "react-query";
-import { loadDash } from "../apis/Dashboard";
+import { loadDash, postOpenChar } from "../apis/Dashboard";
 import { PanelLoader } from "./PanelLoader";
 import { BaseTable, textColumnFilter, SelectColumnFilter } from "./BaseTable";
 import Select from "react-select";
@@ -21,7 +21,19 @@ export const Dashboard = () => {
         Filter: textColumnFilter,
         filter: "text",
         Cell: (props) => (
-          <div style={{ whiteSpace: "nowrap" }}>{props.value}</div>
+          <div style={{ whiteSpace: "nowrap" }}>
+            <ButtonGroup style={{ whiteSpace: "nowrap" }}>
+              <Button
+                bsStyle={"info"}
+                onClick={() => {
+                  postOpenChar(props.row.original.char.id);
+                }}
+              >
+                <i class="fas fa-external-link-alt"></i>
+              </Button>
+              <Button>{props.value} </Button>
+            </ButtonGroup>
+          </div>
         ),
       },
       {
