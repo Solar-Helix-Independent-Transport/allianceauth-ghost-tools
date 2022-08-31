@@ -21,8 +21,8 @@ export const Dashboard = () => {
         Filter: textColumnFilter,
         filter: "text",
         Cell: (props) => (
-          <div style={{ whiteSpace: "nowrap" }}>
-            <ButtonGroup style={{ whiteSpace: "nowrap" }}>
+          <div>
+            <ButtonGroup style={{ display: "flex" }}>
               <Button
                 bsStyle={"info"}
                 onClick={() => {
