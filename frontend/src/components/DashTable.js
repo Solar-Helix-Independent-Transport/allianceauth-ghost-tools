@@ -31,7 +31,13 @@ export const Dashboard = () => {
               >
                 <i class="fas fa-external-link-alt"></i>
               </Button>
-              <Button>{props.value} </Button>
+              <Button
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`https://zkillboard.com/search/${props.value}/`}
+              >
+                {props.value}{" "}
+              </Button>
             </ButtonGroup>
           </div>
         ),

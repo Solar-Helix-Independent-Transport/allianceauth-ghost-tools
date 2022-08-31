@@ -1,4 +1,5 @@
 from allianceauth.eveonline.models import EveCorporationInfo
+from corptools.models import EveLocation
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -9,6 +10,8 @@ class GhostToolsConfiguration(models.Model):
 
     corporation = models.ForeignKey(
         EveCorporationInfo, null=True, default=None, blank=True, on_delete=models.CASCADE)
+
+    stagings = models.ManyToManyField(EveLocation, blank=True)
 
     def __str__(self):
         return "Configuration"
