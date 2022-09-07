@@ -26,10 +26,11 @@ api = NinjaAPI(title="Ghost Tools API", version="0.0.1",
 def get_ghost_list(request):
     if request.user.has_perm('ghosttools.access_ghost_tools'):
         # Get Corp ID
-        cid = models.GhostToolsConfiguration.objects.get(
-            id=1).corporation.corporation_id
+        gconfig = models.GhostToolsConfiguration.objects.get(
+            id=1)
+        cid = gconfig.corporation.corporation_id
 
-        # find a corp token
+        # find a corp token\
         token = get_corp_token(
             cid, ['esi-corporations.track_members.v1'], ['Director'])
 
@@ -46,12 +47,14 @@ def get_ghost_list(request):
             char_id[c['character_id']] = {
                 "char": {
                     "id": c.get("character_id", 0),
-                    "name": "**UNKNOWN**"},
+                    "name": ""},
                 "main": {
                     "id": 0,
-                    "name": "**ORPHAN**",
-                    "corp": "**UNKNOWN**",
-                    "alli": "**UNKNOWN**"
+                    "name": "",
+                    "corp": "",
+                    "corp_id": "",
+                    "alli": "",
+                    "alli_id": ""
                 },
                 "location": {
                     "id": c.get("location_id", 0),
@@ -95,7 +98,9 @@ def get_ghost_list(request):
                     "id": c.character_ownership.user.profile.main_character.character_id,
                     "name": c.character_ownership.user.profile.main_character.character_name,
                     "corp": c.character_ownership.user.profile.main_character.corporation_name,
+                    "corp_id": c.character_ownership.user.profile.main_character.corporation_id,
                     "alli": c.character_ownership.user.profile.main_character.alliance_name,
+                    "alli_id": c.character_ownership.user.profile.main_character.alliance_id,
                 }
             except Exception as e:
                 print(e)
@@ -131,7 +136,11 @@ def get_ghost_list(request):
             d["ship"]['name'] = type_dict.get(
                 d['ship']['id'], f"Unknown {d['ship']['id']}")
 
-        return list(char_id.values())
+        return {
+            "characters": list(char_id.values()),
+            "stagings": [g.location_name for g in gconfig.stagings.all()],
+            "alliances": list(gconfig.alliances.all().values_list('alliance_id', flat=True))
+        }
     else:
         return []
 
@@ -140,7 +149,7 @@ def get_ghost_list(request):
     "ghost/kick",
     tags=["Ghosts"]
 )
-def get_ghost_list(request, character_id: int):
+def post_ghost_kick(request, character_id: int):
     if not request.user.has_perm('ghosttools.access_ghost_tools'):
         return 403, "Permission Denied"
 

@@ -5,4 +5,4 @@ from . import models
 
 @admin.register(models.GhostToolsConfiguration)
 class GhostToolsConfigurationAdmin(admin.ModelAdmin):
-    pass
+    filter_horizontal = ['stagings', 'alliances']

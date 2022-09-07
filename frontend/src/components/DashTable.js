@@ -1,5 +1,5 @@
-import React from "react";
-import { Panel, Label, Button, ButtonGroup } from "react-bootstrap";
+import React, { useState } from "react";
+import { Panel, Checkbox, Button, ButtonGroup } from "react-bootstrap";
 import { useQuery } from "react-query";
 import { loadDash, postOpenChar } from "../apis/Dashboard";
 import { PanelLoader } from "./PanelLoader";
@@ -7,11 +7,14 @@ import { BaseTable, textColumnFilter, SelectColumnFilter } from "./BaseTable";
 import Select from "react-select";
 import { ErrorLoader } from "./ErrorLoader";
 import ReactTimeAgo from "react-time-ago";
+import { StagingSelect } from "./StagingFilters";
 
 export const Dashboard = () => {
   const { isLoading, error, data, isFetching } = useQuery(["dashboard"], () =>
     loadDash(),
   );
+  const [orphans, setOrphans] = useState(false);
+  const [stagings, setStagings] = useState([]);
 
   const columns = React.useMemo(
     () => [
@@ -130,9 +133,40 @@ export const Dashboard = () => {
 
   if (error) return <ErrorLoader />;
 
+  let graphData = data.characters;
+
+  if (stagings.length > 0) {
+    graphData = graphData.filter((row) => {
+      return !stagings.includes(row.location.name);
+    });
+  }
+
+  if (orphans) {
+    graphData = graphData.filter((row) => {
+      return !data.alliances.includes(row.main.alli_id);
+    });
+  }
+
   return (
     <Panel.Body>
-      <BaseTable {...{ isLoading, data, columns, error, isFetching }} />
+      <StagingSelect
+        data={data.stagings}
+        setFilter={setStagings}
+        labelText="Staging Filter"
+        {...{ isFetching }}
+      />
+      <Checkbox
+        onChange={(e) => {
+          setOrphans(e.target.checked);
+        }}
+      >
+        Orphans Only
+      </Checkbox>
+
+      <BaseTable
+        data={graphData}
+        {...{ isLoading, columns, error, isFetching }}
+      />
     </Panel.Body>
   );
 };

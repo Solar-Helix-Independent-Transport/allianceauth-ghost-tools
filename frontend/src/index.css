@@ -176,3 +176,24 @@ table tbbody tr td {
     opacity: 0;
   }
 }
+
+.flex-label-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: stretch;
+}
+
+.flex-label {
+  margin: 2px;
+}
+.flex-select {
+  flex: 1;
+  margin: 2px;
+}
+
+.flex-select-size {
+  width: 300px;
+}

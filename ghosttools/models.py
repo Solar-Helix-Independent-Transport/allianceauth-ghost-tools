@@ -1,4 +1,4 @@
-from allianceauth.eveonline.models import EveCorporationInfo
+from allianceauth.eveonline.models import EveAllianceInfo, EveCorporationInfo
 from corptools.models import EveLocation
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -12,6 +12,7 @@ class GhostToolsConfiguration(models.Model):
         EveCorporationInfo, null=True, default=None, blank=True, on_delete=models.CASCADE)
 
     stagings = models.ManyToManyField(EveLocation, blank=True)
+    alliances = models.ManyToManyField(EveAllianceInfo, blank=True)
 
     def __str__(self):
         return "Configuration"
