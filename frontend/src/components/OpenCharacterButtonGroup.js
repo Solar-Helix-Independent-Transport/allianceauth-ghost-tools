@@ -8,7 +8,7 @@ export const OpenCharacterButtonGroup = ({ character_id, character_name }) => {
   return (
     <ButtonGroup style={{ display: "flex" }}>
       <OpenInGameButton {...{ character_id }} />
-      <Button>{character_name}</Button>
+      <Button style={{ flexGrow: 1 }}>{character_name}</Button>
       <ZkillButton {...{ character_name }} />
       <EveWhoButton {...{ character_id }} />
     </ButtonGroup>

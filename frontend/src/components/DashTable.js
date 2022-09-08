@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Panel, Checkbox, Button, ButtonGroup } from "react-bootstrap";
+import { Panel, Checkbox } from "react-bootstrap";
 import { useQuery } from "react-query";
 import { loadDash } from "../apis/Dashboard";
 import { PanelLoader } from "./PanelLoader";
