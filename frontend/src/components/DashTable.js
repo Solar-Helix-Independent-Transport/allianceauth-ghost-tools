@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import { Panel, Checkbox, Button, ButtonGroup } from "react-bootstrap";
 import { useQuery } from "react-query";
-import { loadDash, postOpenChar } from "../apis/Dashboard";
+import { loadDash } from "../apis/Dashboard";
 import { PanelLoader } from "./PanelLoader";
 import { BaseTable, textColumnFilter, SelectColumnFilter } from "./BaseTable";
-import Select from "react-select";
 import { ErrorLoader } from "./ErrorLoader";
 import ReactTimeAgo from "react-time-ago";
 import { StagingSelect } from "./StagingFilters";
+import { OpenCharacterButtonGroup } from "./OpenCharacterButtonGroup";
 
 export const Dashboard = () => {
-  const { isLoading, error, data, isFetching } = useQuery(["dashboard"], () =>
-    loadDash(),
+  const { isLoading, error, data, isFetching } = useQuery(
+    ["dashboard"],
+    () => loadDash(),
+    {
+      refetchOnWindowFocus: false,
+    },
   );
   const [orphans, setOrphans] = useState(false);
   const [stagings, setStagings] = useState([]);
@@ -24,25 +28,10 @@ export const Dashboard = () => {
         Filter: textColumnFilter,
         filter: "text",
         Cell: (props) => (
-          <div>
-            <ButtonGroup style={{ display: "flex" }}>
-              <Button
-                bsStyle={"info"}
-                onClick={() => {
-                  postOpenChar(props.row.original.char.id);
-                }}
-              >
-                <i class="fas fa-external-link-alt"></i>
-              </Button>
-              <Button
-                target="_blank"
-                rel="noopener noreferrer"
-                href={`https://zkillboard.com/search/${props.value}/`}
-              >
-                {props.value}{" "}
-              </Button>
-            </ButtonGroup>
-          </div>
+          <OpenCharacterButtonGroup
+            character_id={props.row.original.char.id}
+            character_name={props.value}
+          />
         ),
       },
       {
@@ -51,7 +40,10 @@ export const Dashboard = () => {
         Filter: textColumnFilter,
         filter: "text",
         Cell: (props) => (
-          <div style={{ whiteSpace: "nowrap" }}>{props.value}</div>
+          <OpenCharacterButtonGroup
+            character_id={props.row.original.main.id}
+            character_name={props.value}
+          />
         ),
       },
       {
@@ -149,20 +141,23 @@ export const Dashboard = () => {
 
   return (
     <Panel.Body>
-      <StagingSelect
-        data={data.stagings}
-        setFilter={setStagings}
-        labelText="Staging Filter"
-        {...{ isFetching }}
-      />
-      <Checkbox
-        onChange={(e) => {
-          setOrphans(e.target.checked);
-        }}
-      >
-        Orphans Only
-      </Checkbox>
-
+      <div class={"col-xs-12"} style={{ display: "flex" }}>
+        <div style={{ flexGrow: 1 }}>
+          <StagingSelect
+            data={data.stagings}
+            setFilter={setStagings}
+            labelText="Staging Filter"
+            {...{ isFetching }}
+          />
+        </div>
+        <Checkbox
+          onChange={(e) => {
+            setOrphans(e.target.checked);
+          }}
+        >
+          Orphans Only
+        </Checkbox>
+      </div>
       <BaseTable
         data={graphData}
         {...{ isLoading, columns, error, isFetching }}
