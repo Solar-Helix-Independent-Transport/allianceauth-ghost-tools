@@ -25,21 +25,20 @@ export const Dashboard = () => {
       {
         header: "Character",
         accessorKey: "char.name",
-
-        Cell: (props) => (
+        cell: (props) => (
           <OpenCharacterButtonGroup
             character_id={props.row.original.char.id}
-            character_name={props.value}
+            character_name={props.getValue()}
           />
         ),
       },
       {
         header: "Main",
         accessorKey: "main.name",
-        Cell: (props) => (
+        cell: (props) => (
           <OpenCharacterButtonGroup
             character_id={props.row.original.main.id}
-            character_name={props.value}
+            character_name={props.getValue()}
           />
         ),
       },
