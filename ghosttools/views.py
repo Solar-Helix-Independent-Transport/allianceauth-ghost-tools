@@ -10,7 +10,11 @@ from .models import GhostKickToken
 @login_required
 @permission_required('ghosttools.access_ghost_tools')
 def react_bootstrap(request):
-    return render(request, 'ghosttools/react_base.html', context={"version": __version__})
+    return render(request,
+                  'ghosttools/react_base.html',
+                  context={"version": __version__,
+                           "app_name": "ghosttools",
+                           "page_title": "Ghost Tools!"})
 
 
 @login_required

@@ -1,2 +1,2 @@
 default_app_config = 'ghosttools.apps.GhostToolsConfig'
-__version__ = "0.0.2"
+__version__ = "0.0.3"

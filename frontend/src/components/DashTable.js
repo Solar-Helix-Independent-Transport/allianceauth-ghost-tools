@@ -2,19 +2,19 @@ import React, { useState } from "react";
 import { Panel, Checkbox } from "react-bootstrap";
 import { useQuery } from "react-query";
 import { loadDash } from "../apis/Dashboard";
-import { PanelLoader } from "./PanelLoader";
-import { BaseTable, textColumnFilter, SelectColumnFilter } from "./BaseTable";
-import { ErrorLoader } from "./ErrorLoader";
+import { BaseTable } from "allianceauth-components";
 import ReactTimeAgo from "react-time-ago";
 import { StagingSelect } from "./StagingFilters";
 import { OpenCharacterButtonGroup } from "./OpenCharacterButtonGroup";
-
 export const Dashboard = () => {
   const { isLoading, error, data, isFetching } = useQuery(
     ["dashboard"],
     () => loadDash(),
     {
       refetchOnWindowFocus: false,
+      initialData: {
+        characters: [],
+      },
     },
   );
   const [orphans, setOrphans] = useState(false);
@@ -23,10 +23,9 @@ export const Dashboard = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Character",
-        accessor: "char.name",
-        Filter: textColumnFilter,
-        filter: "text",
+        header: "Character",
+        accessorKey: "char.name",
+
         Cell: (props) => (
           <OpenCharacterButtonGroup
             character_id={props.row.original.char.id}
@@ -35,10 +34,8 @@ export const Dashboard = () => {
         ),
       },
       {
-        Header: "Main",
-        accessor: "main.name",
-        Filter: textColumnFilter,
-        filter: "text",
+        header: "Main",
+        accessorKey: "main.name",
         Cell: (props) => (
           <OpenCharacterButtonGroup
             character_id={props.row.original.main.id}
@@ -47,53 +44,29 @@ export const Dashboard = () => {
         ),
       },
       {
-        Header: "Corp",
-        accessor: "main.corp",
-        Filter: SelectColumnFilter,
-        filter: "text",
-        Cell: (props) => (
-          <div style={{ whiteSpace: "nowrap" }}>{props.value}</div>
-        ),
+        header: "Corp",
+        accessorKey: "main.corp",
       },
       {
-        Header: "Alliance",
-        accessor: "main.alli",
-        Filter: SelectColumnFilter,
-        filter: "text",
-        Cell: (props) => (
-          <div style={{ whiteSpace: "nowrap" }}>{props.value}</div>
-        ),
+        header: "Alliance",
+        accessorKey: "main.alli",
       },
       {
-        Header: "Location",
-        accessor: "location.name",
-        Filter: SelectColumnFilter,
-        filter: "text",
-        Cell: (props) => (
-          <div style={{ whiteSpace: "nowrap" }}>{props.value}</div>
-        ),
+        header: "Location",
+        accessorKey: "location.name",
       },
       {
-        Header: "Ship",
-        accessor: "ship.name",
-        Filter: SelectColumnFilter,
-        filter: "text",
-        Cell: (props) => (
-          <div style={{ whiteSpace: "nowrap" }}>{props.value}</div>
-        ),
+        header: "Ship",
+        accessorKey: "ship.name",
       },
       {
-        Header: "Death Clone",
-        accessor: "death_clone.name",
-        Filter: SelectColumnFilter,
-        filter: "text",
-        Cell: (props) => (
-          <div style={{ whiteSpace: "nowrap" }}>{props.value}</div>
-        ),
+        header: "Death Clone",
+        accessorKey: "death_clone.name",
       },
       {
-        Header: "Last Online",
-        accessor: "logoff_date",
+        header: "Last Online",
+        accessorKey: "logoff_date",
+        enableColumnFilter: false,
         Cell: (props) => (
           <div style={{ whiteSpace: "nowrap" }}>
             {props.value ? (
@@ -105,8 +78,9 @@ export const Dashboard = () => {
         ),
       },
       {
-        Header: "Join Date",
-        accessor: "start_date",
+        header: "Join Date",
+        accessorKey: "start_date",
+        enableColumnFilter: false,
         Cell: (props) => (
           <div style={{ whiteSpace: "nowrap" }}>
             {props.value ? (
@@ -121,10 +95,6 @@ export const Dashboard = () => {
     [],
   );
 
-  if (isLoading) return <PanelLoader />;
-
-  if (error) return <ErrorLoader />;
-
   let graphData = data.characters;
 
   if (stagings.length > 0) {
@@ -138,7 +108,6 @@ export const Dashboard = () => {
       return !data.alliances.includes(row.main.alli_id);
     });
   }
-
   return (
     <Panel.Body>
       <div class={"col-xs-12"} style={{ display: "flex" }}>
@@ -160,7 +129,7 @@ export const Dashboard = () => {
       </div>
       <BaseTable
         data={graphData}
-        {...{ isLoading, columns, error, isFetching }}
+        {...{ isLoading, error, columns, isFetching }}
       />
     </Panel.Body>
   );

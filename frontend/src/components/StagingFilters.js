@@ -10,7 +10,12 @@ const colourStyles = {
   },
 };
 
-export const StagingSelect = ({ setFilter, data, labelText, isFetching }) => {
+export const StagingSelect = ({
+  setFilter,
+  data = [],
+  labelText,
+  isFetching,
+}) => {
   let options = data.map((ref) => {
     return {
       value: ref,
