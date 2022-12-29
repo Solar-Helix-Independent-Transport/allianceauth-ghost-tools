@@ -131,7 +131,7 @@ class Ghosts(commands.Cog):
             has_any_perm(ctx.author.id, [
                          'ghosttools.access_ghost_tools'])
             await ctx.respond("Ok!", ephemeral=True)
-            return await ctx.send("All Ghost applications processed!\nPlease log in your ghost and accept the invite!\n If you were rejected please check the reason before you re-apply!")
+            return await ctx.send("All Ghost applications processed!\nPlease log in your ghost and accept the invite!\nIf you were rejected please check the reason before you re-apply!")
         except commands.MissingPermissions as e:
             return await ctx.respond(e.missing_permissions[0], ephemeral=True)
 
