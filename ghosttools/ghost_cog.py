@@ -117,6 +117,24 @@ class Ghosts(commands.Cog):
         except commands.MissingPermissions as e:
             return await ctx.respond(e.missing_permissions[0], ephemeral=True)
 
+    @commands.slash_command(name='ghosts_processed', guild_ids=[int(settings.DISCORD_GUILD_ID)])
+    async def slash_ghosts_done(
+        self,
+        ctx
+    ):
+        """
+        Say ghosts have been processed like a good ghost manager
+        """
+
+        try:
+            await ctx.defer(ephemeral=True)
+            has_any_perm(ctx.author.id, [
+                         'ghosttools.access_ghost_tools'])
+            await ctx.respond("Ok!", ephemeral=True)
+            return await ctx.send("All Ghost applications processed!\nPlease log in your ghost and accept the invite!\n If you were rejected please check the reason before you re-apply!")
+        except commands.MissingPermissions as e:
+            return await ctx.respond(e.missing_permissions[0], ephemeral=True)
+
 
 def setup(bot):
     bot.add_cog(Ghosts(bot))
