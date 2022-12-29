@@ -28,3 +28,8 @@ def register_menu():
 @hooks.register('url_hook')
 def register_url():
     return UrlHook(urls, 'ghosttools', r'^ghosts/')
+
+
+@hooks.register('discord_cogs_hook')
+def register_cogs():
+    return ["ghosttools.ghost_cog"]
