@@ -6,6 +6,7 @@ export const OpenInGameButton = ({ character_id }) => {
   return (
     <Button
       bsStyle={"info"}
+      disabled={character_id ? false : true}
       onClick={() => {
         postOpenChar(character_id);
       }}

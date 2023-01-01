@@ -83,6 +83,7 @@ def get_ghost_list(request):
             "character_ownership",
             "character_ownership__user",
             "character_ownership__user__profile",
+            "character_ownership__user__profile__state",
             "character_ownership__user__profile__main_character",
             "characteraudit",
             "characteraudit__clone",
@@ -101,6 +102,7 @@ def get_ghost_list(request):
                     "corp_id": c.character_ownership.user.profile.main_character.corporation_id,
                     "alli": c.character_ownership.user.profile.main_character.alliance_name,
                     "alli_id": c.character_ownership.user.profile.main_character.alliance_id,
+                    "state": c.character_ownership.user.profile.state.name,
                 }
             except Exception as e:
                 print(e)
@@ -139,7 +141,8 @@ def get_ghost_list(request):
         return {
             "characters": list(char_id.values()),
             "stagings": [g.location_name for g in gconfig.stagings.all()],
-            "alliances": list(gconfig.alliances.all().values_list('alliance_id', flat=True))
+            "alliances": list(gconfig.alliances.all().values_list('alliance_id', flat=True)),
+            "states": ['Member']
         }
     else:
         return []

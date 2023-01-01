@@ -104,7 +104,10 @@ export const Dashboard = () => {
 
   if (orphans) {
     graphData = graphData.filter((row) => {
-      return !data.alliances.includes(row.main.alli_id);
+      return (
+        !data.alliances.includes(row.main.alli_id) ||
+        !data.states.includes(row.main.state)
+      );
     });
   }
   return (
