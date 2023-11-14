@@ -142,7 +142,7 @@ def get_ghost_list(request):
             "characters": list(char_id.values()),
             "stagings": [g.location_name for g in gconfig.stagings.all()],
             "alliances": list(gconfig.alliances.all().values_list('alliance_id', flat=True)),
-            "states": ['Member']
+            "states": ['Member', 's_vip']
         }
     else:
         return []
