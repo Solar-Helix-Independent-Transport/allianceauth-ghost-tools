@@ -6,6 +6,7 @@ from ghosttools import __version__
 
 install_requires = [
     'allianceauth>=2.9.0',
+    'django-ninja>=1.0.1,<2.0.0',
 ]
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
     README = readme.read()

@@ -62,7 +62,7 @@ class Ghosts(commands.Cog):
                     logger.error(e)
             except Exception as e:
                 logger.error(e)
-                discord_string = "unknown"
+                discord_string = f"[{main.character_name}](https://evewho.com/character/{main.character_id}) [[{main.corporation_name} [{main.corporation_ticker}]](https://zkillboard.com/corporation/{main.corporation_id}/)]"
 
             if state in ["Member", "s_vip"]:
                 embed.color = Color.blue()
