@@ -171,10 +171,10 @@ class Ghosts(commands.Cog):
         await self.open_ticket(ctx, ctx.user)
 
     @commands.message_command(
-        name="Create Recruitment Ticket",
-        ctx=[int(settings.DISCORD_GUILD_ID)]+settings.DISCORD_GUILD_IDS
+        name="Create Recruitment Thread",
+        guild_ids=[int(settings.DISCORD_GUILD_ID)]+settings.DISCORD_GUILD_IDS
     )
-    async def reverse_halp(
+    async def reverse_recruit_msg(
         self,
         ctx,
         message
@@ -183,6 +183,18 @@ class Ghosts(commands.Cog):
             Help a new guy get recruiter
         """
         await self.open_ticket(ctx, message.author)
+
+    @commands.user_command(
+        name="Recruit Member",
+        guild_ids=[int(settings.DISCORD_GUILD_ID)]+settings.DISCORD_GUILD_IDS
+    )
+    async def reverse_recruit_user(
+        self, ctx, user
+    ):
+        """
+            Help a new guy get recruiter
+        """
+        await self.open_ticket(ctx, user)
 
 
 def setup(bot):
