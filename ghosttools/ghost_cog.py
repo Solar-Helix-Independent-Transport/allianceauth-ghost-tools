@@ -139,17 +139,18 @@ class Ghosts(commands.Cog):
 
     async def open_ticket(
         self,
-        ctx: discord.Interaction
+        ctx: discord.Interaction,
+        member: discord.Member
     ):
         sup_channel = settings.RECRUIT_CHANNEL_ID
         ch = ctx.guild.get_channel(sup_channel)
         th = await ch.create_thread(
-            name=f"{ctx.user.display_name} | {timezone.now().strftime('%Y-%m-%d %H:%M')}",
+            name=f"{member.display_name} | {timezone.now().strftime('%Y-%m-%d %H:%M')}",
             auto_archive_duration=10080,
             type=discord.ChannelType.private_thread,
             reason=None
         )
-        msg = (f"<@{ctx.user.id}> is hunting for a recruiter!\n\n"
+        msg = (f"<@{member.id}> is hunting for a recruiter!\n\n"
                f"Someone from <@&{settings.RECRUITER_GROUP_ID}> will get in touch soon!")
         embd = Embed(title="Private Thread Guide",
                      description="To add a person to this thread simply `@ping` them. This works with `@groups` as well to bulk add people to the channel. Use wisely, abuse will not be tolerated.\n\nThis is a beta feature if you experience issues please contact the admins. :heart:")
@@ -167,7 +168,7 @@ class Ghosts(commands.Cog):
         """
             Get hold of a recruiter
         """
-        await self.open_ticket(ctx)
+        await self.open_ticket(ctx, ctx.user)
 
     @commands.message_command(
         name="Create Recruitment Ticket",
@@ -176,12 +177,12 @@ class Ghosts(commands.Cog):
     async def reverse_halp(
         self,
         ctx,
-        message: discord.Message
+        message
     ):
         """
             Help a new guy get recruiter
         """
-        await self.open_ticket(ctx)
+        await self.open_ticket(ctx, message.author)
 
 
 def setup(bot):
