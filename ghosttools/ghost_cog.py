@@ -162,7 +162,7 @@ class Ghosts(commands.Cog):
     )
     async def slash_halp(
         self,
-        ctx: discord.Interaction,
+        ctx,
     ):
         """
             Get hold of a recruiter
@@ -175,7 +175,7 @@ class Ghosts(commands.Cog):
     )
     async def reverse_halp(
         self,
-        ctx: discord.Interaction,
+        ctx,
         message: discord.Message
     ):
         """
