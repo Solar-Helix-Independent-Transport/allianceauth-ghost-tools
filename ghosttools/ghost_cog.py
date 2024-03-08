@@ -139,22 +139,22 @@ class Ghosts(commands.Cog):
 
     async def open_ticket(
         self,
-        interaction: discord.Interaction
+        ctx: discord.Interaction
     ):
         sup_channel = settings.RECRUIT_CHANNEL_ID
-        ch = interaction.guild.get_channel(sup_channel)
+        ch = ctx.guild.get_channel(sup_channel)
         th = await ch.create_thread(
-            name=f"{interaction.user.display_name} | {timezone.now().strftime('%Y-%m-%d %H:%M')}",
+            name=f"{ctx.user.display_name} | {timezone.now().strftime('%Y-%m-%d %H:%M')}",
             auto_archive_duration=10080,
             type=discord.ChannelType.private_thread,
             reason=None
         )
-        msg = (f"<@{interaction.user.id}> is hunting for a recruiter!\n\n"
+        msg = (f"<@{ctx.user.id}> is hunting for a recruiter!\n\n"
                f"Someone from <@&{settings.RECRUITER_GROUP_ID}> will get in touch soon!")
         embd = Embed(title="Private Thread Guide",
                      description="To add a person to this thread simply `@ping` them. This works with `@groups` as well to bulk add people to the channel. Use wisely, abuse will not be tolerated.\n\nThis is a beta feature if you experience issues please contact the admins. :heart:")
         await th.send(msg, embed=embd)
-        await interaction.response.send_message(content="Recruitment thread created!", view=None, ephemeral=True)
+        await ctx.response.send_message(content="Recruitment thread created!", view=None, ephemeral=True)
 
     @commands.slash_command(
         name='recruit_me',
@@ -162,26 +162,26 @@ class Ghosts(commands.Cog):
     )
     async def slash_halp(
         self,
-        interaction: discord.Interaction,
+        ctx: discord.Interaction,
     ):
         """
             Get hold of a recruiter
         """
-        await self.open_ticket(interaction)
+        await self.open_ticket(ctx)
 
     @commands.message_command(
         name="Create Recruitment Ticket",
-        guild_ids=[int(settings.DISCORD_GUILD_ID)]+settings.DISCORD_GUILD_IDS
+        ctx=[int(settings.DISCORD_GUILD_ID)]+settings.DISCORD_GUILD_IDS
     )
     async def reverse_halp(
         self,
-        interaction: discord.Interaction,
+        ctx: discord.Interaction,
         message: discord.Message
     ):
         """
             Help a new guy get recruiter
         """
-        await self.open_ticket(interaction)
+        await self.open_ticket(ctx)
 
 
 def setup(bot):
