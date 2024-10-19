@@ -3,6 +3,7 @@ import logging
 
 import discord
 # AA-Discordbot
+from aadiscordbot.app_settings import get_all_servers
 from aadiscordbot.cogs.utils.decorators import has_any_perm
 from allianceauth.eveonline.models import EveCharacter
 from discord import AutocompleteContext, option
@@ -100,7 +101,7 @@ class Ghosts(commands.Cog):
         """Returns a list of colors that begin with the characters entered so far."""
         return list(EveCharacter.objects.filter(character_name__icontains=ctx.value).values_list('character_name', flat=True)[:10])
 
-    @commands.slash_command(name='ghost', guild_ids=[int(settings.DISCORD_GUILD_ID)])
+    @commands.slash_command(name='ghost', guild_ids=get_all_servers())
     @option("character", description="Search for a Ghost!", autocomplete=search_characters)
     async def slash_ghost(
         self,
@@ -114,12 +115,13 @@ class Ghosts(commands.Cog):
         try:
             await ctx.defer()
             has_any_perm(ctx.author.id, [
-                         'ghosttools.access_ghost_tools'])
+                         'ghosttools.access_ghost_tools'],
+                         guild=ctx.guild)
             return await ctx.respond(embed=self.ghost_embed(character))
         except commands.MissingPermissions as e:
             return await ctx.respond(e.missing_permissions[0], ephemeral=True)
 
-    @commands.slash_command(name='ghosts_processed', guild_ids=[int(settings.DISCORD_GUILD_ID)])
+    @commands.slash_command(name='ghosts_processed', guild_ids=get_all_servers())
     async def slash_ghosts_done(
         self,
         ctx
@@ -131,7 +133,8 @@ class Ghosts(commands.Cog):
         try:
             await ctx.defer(ephemeral=True)
             has_any_perm(ctx.author.id, [
-                         'ghosttools.access_ghost_tools'])
+                         'ghosttools.access_ghost_tools'],
+                         guild=ctx.guild)
             await ctx.respond("Ok!", ephemeral=True)
             return await ctx.send("All Ghost applications processed!\nPlease log in your ghost and accept the invite!\nIf you were rejected please check the reason before you re-apply!")
         except commands.MissingPermissions as e:
@@ -159,7 +162,7 @@ class Ghosts(commands.Cog):
 
     @commands.slash_command(
         name='recruit_me',
-        guild_ids=[int(settings.DISCORD_GUILD_ID)]+settings.DISCORD_GUILD_IDS
+        guild_ids=get_all_servers()
     )
     async def slash_halp(
         self,
@@ -172,7 +175,7 @@ class Ghosts(commands.Cog):
 
     @commands.message_command(
         name="Create Recruitment Thread",
-        guild_ids=[int(settings.DISCORD_GUILD_ID)]+settings.DISCORD_GUILD_IDS
+        guild_ids=get_all_servers()
     )
     async def reverse_recruit_msg(
         self,
