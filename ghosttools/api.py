@@ -23,7 +23,7 @@ api = NinjaAPI(title="Ghost Tools API", version="0.0.1",
     "ghost/list",
     tags=["Ghosts"]
 )
-def get_ghost_list(request):
+def get_ghost_list(request, corporation_id=None):
     if request.user.has_perm('ghosttools.access_ghost_tools'):
         # Get Corp ID
         gconfig = models.GhostToolsConfiguration.objects.get(
