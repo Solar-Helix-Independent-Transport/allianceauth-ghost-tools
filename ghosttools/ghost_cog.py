@@ -34,14 +34,18 @@ class Ghosts(commands.Cog):
         )
 
         try:
-            char = EveCharacter.objects.get(character_name=input_name)
+            char = EveCharacter.objects.exclude(corporation_id=1000001).get(character_name=input_name)
 
             main = char.character_ownership.user.profile.main_character
+            
+            if not main:
+                embed.description = f"**Reject** Application: `Main not found`"
+                return embed
+
             state = char.character_ownership.user.profile.state.name
             ghosts = char.character_ownership.user.character_ownerships.all(
             ).select_related('character').filter(character__corporation_id=98534707)
-            ghost = None
-
+            ghost = None                
             if ghosts.exists():
                 _g = []
                 for g in ghosts:
