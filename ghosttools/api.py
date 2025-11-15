@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 api = NinjaAPI(title="Ghost Tools API", version="0.0.1",
-               urls_namespace='ghosttools:api', auth=django_auth, csrf=True,)
+               urls_namespace='ghosttools:api', auth=django_auth,)
 # openapi_url=settings.DEBUG and "/openapi.json" or "")
 
 
