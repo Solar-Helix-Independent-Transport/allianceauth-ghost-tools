@@ -2,7 +2,7 @@ import logging
 
 from allianceauth.eveonline.models import EveCharacter
 from corptools.models import EveItemType, EveLocation
-from corptools.providers import esi
+from corptools.providers import esi_openapi
 from corptools.task_helpers.corp_helpers import get_corp_token
 from django.conf import settings
 from ninja import NinjaAPI
@@ -32,12 +32,16 @@ def get_ghost_list(request, corporation_id=None):
 
         # find a corp token\
         token = get_corp_token(
-            cid, ['esi-corporations.track_members.v1'], ['Director'])
+            cid, 
+            ['esi-corporations.track_members.v1'], 
+            ['Director']
+        )
 
         # grab member tracking list
-        tracking = esi.client.Corporation.get_corporations_corporation_id_membertracking(
+        tracking = esi_openapi.client.Corporation.GetCorporationsCorporationIdMembertracking(
             corporation_id=cid,
-            token=token.valid_access_token()).result()
+            token=token
+        ).result()
 
         # get all characters in auth
         location_ids = []
@@ -46,7 +50,7 @@ def get_ghost_list(request, corporation_id=None):
         for c in tracking:
             char_id[c['character_id']] = {
                 "char": {
-                    "id": c.get("character_id", 0),
+                    "id": c.character_id,
                     "name": ""},
                 "main": {
                     "id": 0,
@@ -57,12 +61,12 @@ def get_ghost_list(request, corporation_id=None):
                     "alli_id": ""
                 },
                 "location": {
-                    "id": c.get("location_id", 0),
+                    "id": c.location_id,
                     "name": "",
                     "system": {"id": 0, "name": ""}
                 },
                 "ship": {
-                    "id": c.get("ship_type_id", ""),
+                    "id": c.ship_type_id,
                     "name": ""
                 },
                 "last_clone_jump_date": "",
@@ -71,11 +75,11 @@ def get_ghost_list(request, corporation_id=None):
                     "id": 0,
                     "name": ""
                 },
-                "logoff_date": c.get("logoff_date", ""),
-                "start_date": c.get("start_date", "")
+                "logoff_date": c.logoff_date,
+                "start_date": c.start_date
             }
-            location_ids.append(c.get("location_id", ""))
-            type_ids.append(c.get("ship_type_id", ""))
+            location_ids.append(c.location_id)
+            type_ids.append(c.ship_type_id)
 
         c_models = EveCharacter.objects.filter(
             character_id__in=list(char_id.keys())
@@ -160,11 +164,15 @@ def post_ghost_kick(request, character_id: int):
         if id:
             linked = request.user.ghost_character
             if linked:
-                online = esi.client.Location.get_characters_character_id_online(
-                    character_id=linked.token.character_id, token=linked.token.valid_access_token()).result()
-                if online.get('online', False):
-                    esi.client.User_Interface.post_ui_openwindow_information(
-                        target_id=character_id, token=linked.token.valid_access_token()).result()
+                online = esi_openapi.client.Location.GetCharactersCharacterIdOnline(
+                    character_id=linked.token.character_id,
+                    token=linked.token
+                ).result()
+                if online.online:
+                    esi_openapi.client.User_Interface.PostUiOpenwindowInformation(
+                        target_id=character_id,
+                        token=linked.token
+                    ).result()
 
         return 200, "Sent Open Request"
     except Exception as e:
