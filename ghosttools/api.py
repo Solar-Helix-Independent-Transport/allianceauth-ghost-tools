@@ -50,7 +50,7 @@ def get_ghost_list(request, corporation_id=None):
         type_ids = []
         char_id = {}
         for c in tracking:
-            char_id[c['character_id']] = {
+            char_id[c.character_id] = {
                 "char": {
                     "id": c.character_id,
                     "name": ""},
