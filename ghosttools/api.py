@@ -41,7 +41,9 @@ def get_ghost_list(request, corporation_id=None):
         tracking = esi_openapi.client.Corporation.GetCorporationsCorporationIdMembertracking(
             corporation_id=cid,
             token=token
-        ).result()
+        ).result(
+            use_etag=False
+        )
 
         # get all characters in auth
         location_ids = []
@@ -167,7 +169,9 @@ def post_ghost_kick(request, character_id: int):
                 online = esi_openapi.client.Location.GetCharactersCharacterIdOnline(
                     character_id=linked.token.character_id,
                     token=linked.token
-                ).result()
+                ).result(
+                    use_etag=False
+                )
                 if online.online:
                     esi_openapi.client.User_Interface.PostUiOpenwindowInformation(
                         target_id=character_id,
