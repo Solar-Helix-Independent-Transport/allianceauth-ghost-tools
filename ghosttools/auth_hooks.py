@@ -11,7 +11,7 @@ class GhostDash(MenuItemHook):
         MenuItemHook.__init__(self,
                               "Ghost Tools",
                               'fas fa-ghost fa-fw',
-                              'ghosttools:view',
+                              'ghosttools:select_corp',
                               navactive=['ghosttools:'])
 
     def render(self, request):
