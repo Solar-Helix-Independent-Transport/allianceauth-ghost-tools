@@ -5,6 +5,3 @@ coverage
 # Ignore all HTML files:
 *.html
 
-# ingnore assembled files
-indydash/static/*
-frontend/build/*
